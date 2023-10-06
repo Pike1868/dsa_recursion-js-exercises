@@ -1,124 +1,121 @@
 /** product: calculate the product of an array of numbers. */
 
-function product(nums) {
-  if (nums.length === 0) {
-    return 1;
-  } else {
-    return nums[0] * product(nums.slice(1));
-  }
+function product(nums, i = 0) {
+  return nums.length === i ? 1 : nums[i] * product(nums, i + 1);
 }
 
 /** longest: return the length of the longest word in an array of words. */
 
-function longest(words) {
-  if (words.length === 0) {
-    return 0;
-  } else if (words[0].length > longest(words.slice(1))) {
-    return words[0].length;
-  } else {
-    return longest(words.slice(1));
+function longest(words, i = 0, longestLength = 0) {
+  if (words.length === i) {
+    return longestLength;
+  } else if (words[i].length > longestLength) {
+    longestLength = words[i].length;
   }
+  return longest(words, i + 1, longestLength);
 }
 
 /** everyOther: return a string with every other letter. */
 
-function everyOther(str) {
-  if (str.length === 0) {
-    return "";
-  } else {
-    return str[0] + everyOther(str.slice(2));
+function everyOther(str, i = 0, newStr = "") {
+  if (i >= str.length) {
+    return newStr;
   }
+  newStr += str[i];
+  return everyOther(str, i + 2, newStr);
 }
 
 /** isPalindrome: checks whether a string is a palindrome or not. */
 
-function isPalindrome(str) {
-  if (str.length === 0 || str.length === 1) {
+function isPalindrome(str, i = 0, j = 1) {
+  if (str.length === i) {
     return true;
-  } else if (str[0] !== str[str.length - 1]) {
+  } else if (str[i] !== str[str.length - j]) {
     return false;
-  } else {
-    return isPalindrome(str.substring(1, str.length - 1));
   }
+  return isPalindrome(str, i + 1, j + 1);
 }
 
 /** findIndex: return the index of val in arr (or -1 if val is not present). */
 
-function findIndex(arr, val) {
-  if (arr.length === 0) {
+function findIndex(arr, val, i = 0) {
+  if (arr.length === i) {
     return -1;
-  } else if (arr[0] === val) {
-    return 0;
-  } else {
-    let result = findIndex(arr.slice(1), val);
-    if (result === -1) {
-      return -1;
-    } else {
-      return result + 1;
-    }
+  } else if (arr[i] === val) {
+    return i;
   }
+  return findIndex(arr, val, i + 1);
 }
+
 /** revString: return a copy of a string, but in reverse. */
 
-function revString(str) {
-  if (str.length === 0) {
-    return "";
+function revString(str, i = 0, newStr = "") {
+  if (str.length === i) {
+    return newStr;
   } else {
-    let result = revString(str.slice(1));
-    return result + str[0];
+    newStr += str[str.length - 1 - i];
+    return revString(str, i + 1, newStr);
   }
 }
 
 /** gatherStrings: given an object, return an array of all of the string values. */
 
-function gatherStrings(obj) {
+function gatherStrings(obj, onlyStrings = []) {
   if (Object.keys(obj).length === 0) {
     return [];
   }
-
-  let result = [];
-
-  Object.values(obj).forEach((value) => {
-    if (typeof value === "string") {
-      result.push(value);
-    } else if (Array.isArray(value)) {
-      result = result.concat(gatherStrings(value));
-    } else if (typeof value === "object" && value !== null) {
-      // adding a null check here
-      result = result.concat(gatherStrings(value));
+  for (itemKey in obj) {
+    if (typeof obj[itemKey] === "string") {
+      onlyStrings.push(obj[itemKey]);
+    } else if (Array.isArray(obj[itemKey])) {
+      gatherStrings(obj[itemKey], onlyStrings);
+    } else if (typeof obj[itemKey] === "object") {
+      gatherStrings(obj[itemKey], onlyStrings);
     }
-  });
-
-  return result;
+  }
+  return onlyStrings;
 }
 
 /** binarySearch: given a sorted array of numbers, and a value,
  * return the index of that value (or -1 if val is not present). */
 
-function binarySearch(arr, val) {
-  let middleIndex = Math.floor(arr.length / 2);
-  //base case
-  if (arr.length === 0) return -1;
-  // compare if middle index value matches the search value
-  else if (arr[middleIndex] === val) return middleIndex;
-  //recursive cases
-  //if value at middle index is less than the search value, search the right half of the array
-  else if (arr[middleIndex] < val) {
-    //set the recursive function to a variable to track the index, add one to middle index to search everything after the value at the current middle index
-    let result = binarySearch(arr.slice(middleIndex + 1), val);
-    //if the value is not found return and end execution
-    if (result === -1) {
-      return result;
-    } else {
-      return result + middleIndex + 1;
-    }
-  }
-  //else search the left side of the array
-  else {
-    //set the recursive function to a variable to track the index
-    let result = binarySearch(arr.slice(0, middleIndex), val);
-    //since the first part of arr is not modified the index returned will match the index of the original array given
-    return result;
+// function binarySearch(arr, val) {
+//   let middleIndex = Math.floor(arr.length / 2);
+//   //base case
+//   if (arr.length === 0) return -1;
+//   // compare if middle index value matches the search value
+//   else if (arr[middleIndex] === val) return middleIndex;
+//   //recursive cases
+//   //if value at middle index is less than the search value, search the right half of the array
+//   else if (arr[middleIndex] < val) {
+//     //set the recursive function to a variable to track the index, add one to middle index to search everything after the value at the current middle index
+//     let result = binarySearch(arr.slice(middleIndex + 1), val);
+//     //if the value is not found return and end execution
+//     if (result === -1) {
+//       return result;
+//     } else {
+//       return result + middleIndex + 1;
+//     }
+//   }
+//   //else search the left side of the array
+//   else {
+//     //set the recursive function to a variable to track the index
+//     let result = binarySearch(arr.slice(0, middleIndex), val);
+//     //since the first part of arr is not modified the index returned will match the index of the original array given
+//     return result;
+//   }
+// }
+
+function binarySearch(arr, val, start = 0, end = arr.length) {
+  let middleIndex = Math.floor((start + end) / 2);
+  if (start > end) {
+    return -1;
+  } else if (arr[middleIndex] === val) {
+    return middleIndex;
+  } else if (arr[middleIndex] < val) {
+    return binarySearch(arr, val, middleIndex + 1, end);
+  } else {
+    return binarySearch(arr, val, start, middleIndex - 1);
   }
 }
 
